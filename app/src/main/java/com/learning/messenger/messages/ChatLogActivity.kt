@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -34,9 +35,11 @@ class ChatLogActivity : AppCompatActivity() {
 			performSendMessage()
 		}
 	}
-
 	private  fun listenForMessages() {
-		val ref = FirebaseDatabase.getInstance().getReference("/messages")
+		val fromId = FirebaseAuth.getInstance().uid ?: return
+		val toId = toUser?.uid ?: return
+		val ref = FirebaseDatabase.getInstance()
+			.getReference("/user-messages/$fromId/$toId")
 		ref.addChildEventListener(object: ChildEventListener {
 			override fun onCancelled(p0: DatabaseError) {}
 			override fun onChildChanged(p0: DataSnapshot, p1: String?) {}
@@ -47,28 +50,29 @@ class ChatLogActivity : AppCompatActivity() {
 				Log.d("ChatLog", message?.text)
 				if (message.fromId == FirebaseAuth.getInstance().uid) {
 					val fromUser = LatestMessagesActivity.selectedUser ?: return
-					adapter.add(ChatFromItem(message?.text, selectedUser!!))
+					adapter.add(ChatFromItem(message?.text, fromUser!!))
 				} else {
 					adapter.add(ChatToItem(message?.text, toUser!!))
 				}
 			}
 		})
 	}
-
 	private fun performSendMessage() {
-		val ref = FirebaseDatabase.getInstance()
-			.getReference("/messages")
-			.push()
-
 		val text = new_message_edit_text_chat_log.text.toString()
 		val fromId = FirebaseAuth.getInstance().uid ?: return
 		val toId = toUser!!.uid.toString()
-
+		val ref = FirebaseDatabase.getInstance()
+			.getReference("/user-messages/$fromId/$toId")
+			.push()
+		val toRef = FirebaseDatabase.getInstance()
+			.getReference("/user-messages/$toId/$fromId")
+			.push()
 		val message = ChatMessage(ref.key!!, text, fromId, toId, System.currentTimeMillis()/1000)
-		ref.setValue(message)
-			.addOnSuccessListener {
-
-			}
+		ref.setValue(message).addOnSuccessListener {
+			new_message_edit_text_chat_log.text.clear()
+			recyclerview_chat_log.scrollToPosition(adapter.itemCount - 1)
+		}
+		toRef.setValue(message)
 	}
 	override fun onOptionsItemSelected(item: MenuItem): Boolean {
 		when (item.itemId) {
