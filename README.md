@@ -243,3 +243,68 @@ override fun onOptionsItemSelected(item: MenuItem): Boolean {
     constructor() : this("", "", "")
   }
   ```
+[Eposode 6](https://www.youtube.com/watch?v=RYyri2W3Tho&list=PL0dzCUj1L5JE-jiBHjxlmXEkQkum_M3R-&index=6)
+- Save data to Firebase Database
+```
+val ref = FirebaseDatabase.getInstance()
+  .getReference("/messages")
+  .push()
+ ref.setValue(message) 
+```
+
+- Unwrap value with Elvis operation 
+```
+val fromId = FirebaseAuth.getInstance().uid ?: return
+```
+
+- Get current time (in milliseconds) 
+```
+System.currentTimeMillis()
+```
+
+[Eposode 7](https://www.youtube.com/watch?v=RYyri2W3Tho&list=PL0dzCUj1L5JE-jiBHjxlmXEkQkum_M3R-&index=7)
+- Hotkeys 
+  - Search class: `cmd + O`
+  - Search file: `cmd + Shift + O`
+  - Search symbol `cmd + option + O`
+  - Toggle side window: `cmd + number`. For instance: Toggle Projects side bar: `cmd + 1`
+  - Collapse all definitions: `cmd + Shift + -`
+  - Collapse function: `cmd + -`
+
+[Eposode 8](https://www.youtube.com/watch?v=RYyri2W3Tho&list=PL0dzCUj1L5JE-jiBHjxlmXEkQkum_M3R-&index=8)
+- Change to correct message database schema
+  - Send: save message with 2 to places, `your id` and `your friend id`
+  ```
+  val ref = FirebaseDatabase.getInstance()
+    .getReference("/user-messages/$fromId/$toId")
+    .push()
+  val toRef = FirebaseDatabase.getInstance()
+    .getReference("/user-messages/$toId/$fromId")
+    .push()
+  ```
+- Listen
+  ```
+  val ref = FirebaseDatabase.getInstance()
+    .getReference("/user-messages/$fromId/$toId")
+  ```
+- Scroll to latest message: 
+```
+recyclerview_chat_log.scrollToPosition(adapter.itemCount - 1)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
