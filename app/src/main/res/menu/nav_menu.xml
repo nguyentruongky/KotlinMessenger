@@ -4,10 +4,10 @@
     <item
         android:id="@+id/menu_new_message"
         android:title="New Message"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="ifRoom" />
     <item
-    android:id="@+id/menu_sign_out"
-    android:title="Sign Out"
-    app:showAsAction="ifRoom"/>
+        android:id="@+id/menu_sign_out"
+        android:title="Sign Out"
+        app:showAsAction="ifRoom" />
 
 </menu>

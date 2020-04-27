@@ -1,5 +1,6 @@
 package com.learning.messenger.messages
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.database.DataSnapshot
@@ -30,21 +31,21 @@ class NewMessageActivity : AppCompatActivity() {
 				override fun onDataChange(p0: DataSnapshot) {
 					val adapter = GroupAdapter<GroupieViewHolder>()
 					p0.children.forEach {
-						val user = it.getValue(User::class.java)
-						if (user != null) {
-							adapter.add(
-								UserItem(
-									user!!
-								)
-							)
-						}
+						val user = it.getValue(User::class.java) ?: return
+						adapter.add(UserItem(user!!))
+					}
+					adapter.setOnItemClickListener { item, view ->
+						val intent = Intent(view.context, ChatLogActivity::class.java)
+
+						val userItem = item as UserItem
+						intent.putExtra("USER_KEY", userItem.user)
+						startActivity(intent)
+						finish()
 					}
 					recyclerview_new_message.adapter = adapter
 				}
 
-				override fun onCancelled(p0: DatabaseError) {
-
-				}
+				override fun onCancelled(p0: DatabaseError) {}
 			})
 	}
 }
@@ -52,7 +53,8 @@ class NewMessageActivity : AppCompatActivity() {
 class UserItem(val user: User) : Item<GroupieViewHolder>() {
 	override fun bind(viewHolder: GroupieViewHolder, position: Int) {
 		viewHolder.itemView.user_name_textview_new_message.text = user.userName
-		Picasso.get().load(user.avatar).into(viewHolder.itemView.avatar_imageView_new_message)
+		Picasso.get().load(user.avatar)
+			.into(viewHolder.itemView.avatar_imageView_new_message)
 	}
 
 	override fun getLayout(): Int {
