@@ -193,3 +193,53 @@ private fun fetchUsers() {
     })
 }
 ```
+
+[Eposode 5](https://www.youtube.com/watch?v=RYyri2W3Tho&list=PL0dzCUj1L5JE-jiBHjxlmXEkQkum_M3R-&index=5)
+
+- Change title 
+```
+supportActionBar.title = "Chat Log"
+```
+
+- Back button on the action bar doesn't work. Here how to fix. 
+```
+override fun onOptionsItemSelected(item: MenuItem): Boolean {
+    when (item.itemId) {
+      android.R.id.home -> {
+        onBackPressed()
+        return true
+      }
+    }
+    return super.onOptionsItemSelected(item)
+  }
+}
+```
+
+- Pass object from Activity to Activity
+  - From Activity
+  ```
+  val userItem = item as UserItem
+  intent.putExtra("USER_KEY", userItem.user.userName)
+  startActivity(intent)
+  ```
+  - To Activity, onCreate
+  ```
+  val userName = intent.getStringExtra("USER_KEY")
+  ```
+
+- Extend a class to Parcelable
+  - Add code to build.gradle (app) above `android`
+
+  ```
+  androidExtensions {
+    experimental = true
+  }
+  ```
+
+  - Add `@Parcelize` and extend Parcelable to class definition
+  ```
+  @Parcelize
+  class  User(val uid: String, val userName: String, val avatar: String) : Parcelable {
+    constructor() : this("", "", "")
+  }
+  ```
