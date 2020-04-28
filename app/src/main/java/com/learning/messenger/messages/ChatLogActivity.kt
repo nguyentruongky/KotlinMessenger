@@ -73,6 +73,13 @@ class ChatLogActivity : AppCompatActivity() {
 			recyclerview_chat_log.scrollToPosition(adapter.itemCount - 1)
 		}
 		toRef.setValue(message)
+
+		val latestMessageRef = FirebaseDatabase.getInstance()
+			.getReference("/latest_messages/$fromId/$toId")
+		latestMessageRef.setValue(message)
+		val latestMessageToRef = FirebaseDatabase.getInstance()
+			.getReference("/latest_messages/$toId/$fromId")
+		latestMessageToRef.setValue(message)
 	}
 	override fun onOptionsItemSelected(item: MenuItem): Boolean {
 		when (item.itemId) {
