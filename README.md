@@ -10,7 +10,7 @@ This course is really awesome. Thanks Brian.
 
 Below is the list of what I learnt from this course. 
 
-[Eposode 1](https://www.youtube.com/watch?v=ihJGxFu2u9Q&list=PL0dzCUj1L5JE-jiBHjxlmXEkQkum_M3R-&index=1)
+[Episode 1](https://www.youtube.com/watch?v=ihJGxFu2u9Q&list=PL0dzCUj1L5JE-jiBHjxlmXEkQkum_M3R-&index=1)
 - Create UI from beginning. 
 - Connect constraints in ConstraintLayout. Drag and drop, but I prefer setup in code instead. 
 - Log message: `Log.d("Your tag - Should be your Activity Name", "Your message is here")`.
@@ -20,7 +20,7 @@ val intent = Intent(this, LoginActivity::class.java)
 startActivity(intent)
 ```
 
-[Eposode 2](https://www.youtube.com/watch?v=RYyri2W3Tho&list=PL0dzCUj1L5JE-jiBHjxlmXEkQkum_M3R-&index=2)
+[Episode 2](https://www.youtube.com/watch?v=RYyri2W3Tho&list=PL0dzCUj1L5JE-jiBHjxlmXEkQkum_M3R-&index=2)
 - Create and login with Firebase.
 - Add depedencies into gradle.build.
 - Create round corner textview. 
@@ -37,7 +37,7 @@ startActivity(intent)
   android:background="@drawable/rounded_edittext_register_login"
   ```
 
-[Eposode 3](https://www.youtube.com/watch?v=RYyri2W3Tho&list=PL0dzCUj1L5JE-jiBHjxlmXEkQkum_M3R-&index=3)
+[Episode 3](https://www.youtube.com/watch?v=RYyri2W3Tho&list=PL0dzCUj1L5JE-jiBHjxlmXEkQkum_M3R-&index=3)
 - Pick an image
   - Show picker activity
     ```
@@ -86,7 +86,7 @@ startActivity(intent)
   implementation 'de.hdodenhof:circleimageview:3.1.0'
   ```
 
-[Eposode 4](https://www.youtube.com/watch?v=RYyri2W3Tho&list=PL0dzCUj1L5JE-jiBHjxlmXEkQkum_M3R-&index=4)
+[Episode 4](https://www.youtube.com/watch?v=RYyri2W3Tho&list=PL0dzCUj1L5JE-jiBHjxlmXEkQkum_M3R-&index=4)
 
 - Show new screen and don't allow to go back
   ```
@@ -194,7 +194,7 @@ private fun fetchUsers() {
 }
 ```
 
-[Eposode 5](https://www.youtube.com/watch?v=RYyri2W3Tho&list=PL0dzCUj1L5JE-jiBHjxlmXEkQkum_M3R-&index=5)
+[Episode 5](https://www.youtube.com/watch?v=RYyri2W3Tho&list=PL0dzCUj1L5JE-jiBHjxlmXEkQkum_M3R-&index=5)
 
 - Change title 
 ```
@@ -243,7 +243,7 @@ override fun onOptionsItemSelected(item: MenuItem): Boolean {
     constructor() : this("", "", "")
   }
   ```
-[Eposode 6](https://www.youtube.com/watch?v=RYyri2W3Tho&list=PL0dzCUj1L5JE-jiBHjxlmXEkQkum_M3R-&index=6)
+[Episode 6](https://www.youtube.com/watch?v=RYyri2W3Tho&list=PL0dzCUj1L5JE-jiBHjxlmXEkQkum_M3R-&index=6)
 - Save data to Firebase Database
 ```
 val ref = FirebaseDatabase.getInstance()
@@ -262,7 +262,7 @@ val fromId = FirebaseAuth.getInstance().uid ?: return
 System.currentTimeMillis()
 ```
 
-[Eposode 7](https://www.youtube.com/watch?v=RYyri2W3Tho&list=PL0dzCUj1L5JE-jiBHjxlmXEkQkum_M3R-&index=7)
+[Episode 7](https://www.youtube.com/watch?v=RYyri2W3Tho&list=PL0dzCUj1L5JE-jiBHjxlmXEkQkum_M3R-&index=7)
 - Hotkeys 
   - Search class: `cmd + O`
   - Search file: `cmd + Shift + O`
@@ -271,7 +271,7 @@ System.currentTimeMillis()
   - Collapse all definitions: `cmd + Shift + -`
   - Collapse function: `cmd + -`
 
-[Eposode 8](https://www.youtube.com/watch?v=RYyri2W3Tho&list=PL0dzCUj1L5JE-jiBHjxlmXEkQkum_M3R-&index=8)
+[Episode 8](https://www.youtube.com/watch?v=RYyri2W3Tho&list=PL0dzCUj1L5JE-jiBHjxlmXEkQkum_M3R-&index=8)
 - Change to correct message database schema
   - Send: save message with 2 to places, `your id` and `your friend id`
   ```
@@ -292,9 +292,35 @@ System.currentTimeMillis()
 recyclerview_chat_log.scrollToPosition(adapter.itemCount - 1)
 ```
 
+[Episode 9](https://www.youtube.com/watch?v=RYyri2W3Tho&list=PL0dzCUj1L5JE-jiBHjxlmXEkQkum_M3R-&index=9)
+- Chain controls: select 2 controls and right click to select `Chain`. Right click on the chain to select `chain mode`
+- Send message and save to `latest-messages`. In `ChatLogActivity`, `performSendMessage`
+```
+val latestMessageRef = FirebaseDatabase.getInstance()
+  .getReference("/latest_messages/$fromId/$toId")
+latestMessageRef.setValue(message)
+val latestMessageToRef = FirebaseDatabase.getInstance()
+  .getReference("/latest_messages/$toId/$fromId")
+latestMessageToRef.setValue(message)
+```
 
+- Use HashMap to store latest messages. Add message when `onChildChanged`, and `onChildAdded`
+```
+val latestMessagesMap = HashMap<String, ChatMessage>()
 
+private  fun addMessage(p0: DataSnapshot) {
+  val message = p0.getValue(ChatMessage:: class.javaObjectType) ?: return
+  latestMessagesMap[p0.key!!] = message
+  refreshRecyclerView()
+}
 
+private  fun refreshRecyclerView() {
+  adapter.clear()
+  latestMessagesMap.values.forEach {
+    adapter.add(LatestMessageRow(it))
+  }
+}
+```
 
 
 
