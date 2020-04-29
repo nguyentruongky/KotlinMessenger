@@ -2,16 +2,21 @@ package com.learning.messenger.messages
 
 import android.content.Intent
 import android.os.Bundle
+import android.renderscript.Sampler
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.DividerItemDecoration
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.database.*
+import com.google.firebase.ktx.Firebase
 import com.learning.messenger.R
 import com.learning.messenger.models.ChatMessage
+import com.learning.messenger.models.LatestMessageRow
 import com.learning.messenger.registerLogin.RegisterActivity
 import com.learning.messenger.registerLogin.User
+import com.squareup.picasso.Picasso
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Item
@@ -33,16 +38,15 @@ class LatestMessagesActivity : AppCompatActivity() {
 		verifyUserLoggedIn()
 		listenForLatestMessages()
 		recycler_view_latest_messages.adapter = adapter
-	}
-	class LatestMessageRow(val message: ChatMessage): Item<GroupieViewHolder>() {
-		override fun getLayout(): Int {
-			return R.layout.latest_message_row
+		recycler_view_latest_messages.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
+		adapter.setOnItemClickListener { item, view ->
+			val intent = Intent(this, ChatLogActivity:: class.java)
+			val row = item as LatestMessageRow
+			intent.putExtra("USER_KEY", row.chatParner)
+			startActivity(intent)
 		}
+	}
 
-		override fun bind(viewHolder: GroupieViewHolder, position: Int) {
-			viewHolder.itemView.message_textview_latest_message_row.text = message.text
-		}
-	}
 	private  fun refreshRecyclerView() {
 		adapter.clear()
 		latestMessagesMap.values.forEach {

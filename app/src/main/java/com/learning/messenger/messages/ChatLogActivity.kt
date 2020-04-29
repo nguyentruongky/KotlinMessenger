@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.database.ChildEventListener
@@ -18,18 +19,21 @@ import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Item
 import kotlinx.android.synthetic.main.activity_chat_log.*
+import kotlinx.android.synthetic.main.activity_latest_messages.*
 import kotlinx.android.synthetic.main.chat_from_row.view.*
 import kotlinx.android.synthetic.main.chat_to_row.view.*
 
 class ChatLogActivity : AppCompatActivity() {
 	val adapter = GroupAdapter<GroupieViewHolder>()
 	var toUser: User? = null
+	var recyclerView: RecyclerView? = null
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_chat_log)
 		toUser = intent.getParcelableExtra<User>("USER_KEY")
 		supportActionBar?.title = toUser?.userName
 		recyclerview_chat_log.adapter = adapter
+		recyclerView = recyclerview_chat_log
 		listenForMessages()
 		send_button_chat_log.setOnClickListener {
 			performSendMessage()
@@ -54,6 +58,7 @@ class ChatLogActivity : AppCompatActivity() {
 				} else {
 					adapter.add(ChatToItem(message?.text, toUser!!))
 				}
+				recyclerView?.scrollToPosition(adapter.itemCount-1)
 			}
 		})
 	}
