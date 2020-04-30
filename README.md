@@ -322,15 +322,8 @@ private  fun refreshRecyclerView() {
 }
 ```
 
+# Conclusion 
+This course was closed with not fully features. But it's enough for me. Now I can hop into the company project. The commercial project is really different, too complicated and million lines of code. But I'm confident and I fixed few bugs there. Cheer. 
 
-
-
-
-
-
-
-
-
-
-
-
+I can do and you can do. 
+> Enjoy coding. 
